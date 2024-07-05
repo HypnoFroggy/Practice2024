@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p><a href="/">Вернуться к поиску вакансий</a></p>
+<h2>Фильрация по параметрам</h2>
+    <form method="get" action="list">
+        {% csrf_token %}
+        <p>Название вакансии: <br> <a name="name"> {{name}}</a></p>
+        <p>Опыт <a> {{experience}}</a>
+            <br> <input name="experience" /></p>
+        <p>Зарплата <a> {{salary}}</a>
+            <br> <input name="salary" /></p>
+        <p>Вступительный тест <a> {{has_test}}</a>
+            <br> <input type="checkbox" name="has_test" /></p>
+        <input type="submit" value="Применить фильтр" />
+    </form>
+<table>Название вакансии <br>
+    {% for element in list %}
+    <tr>
+        {% for property in element %}
+        <td>{{property}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
