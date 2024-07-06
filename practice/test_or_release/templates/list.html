@@ -9,20 +9,35 @@
 <h2>Фильрация по параметрам</h2>
     <form method="get" action="list">
         {% csrf_token %}
-        <p>Название вакансии: <br> <a name="name"> {{name}}</a></p>
-        <p>Опыт <a> {{experience}}</a>
-            <br> <input name="experience" /></p>
-        <p>Зарплата <a> {{salary}}</a>
-            <br> <input name="salary" /></p>
-        <p>Вступительный тест <a> {{has_test}}</a>
-            <br> <input type="checkbox" name="has_test" /></p>
+        <p>Название вакансии:
+            <br> <input name="name" value="{{name}}"/></p>
+        </p>
+        <p>Опыт
+            <br> <input name="experience" value="{{experience}}"/></p>
+        <p>Зарплата от {{salary}}
+            <br> <input name="salary"  value="{{salary}}"/></p>
+        <p>Вступительный тест {{has_test}}
+            <br> <input type="checkbox" name="has_test"/></p>
         <input type="submit" value="Применить фильтр" />
     </form>
-<table>Название вакансии <br>
+<br>
+<table>
+    <tr>
+        <td>Название</td>
+        <td>Зарплата от</td>
+        <td>Требуемый опыт</td>
+        <td>Тестирование</td>
+        <td>Локация</td>
+        <td>Описание</td>
+    </tr>
     {% for element in list %}
     <tr>
         {% for property in element %}
-        <td>{{property}}</td>
+        <td>
+            {% autoescape off %}
+            {{property}}
+            {% endautoescape %}
+        </td>
         {% endfor %}
     </tr>
     {% endfor %}

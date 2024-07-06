@@ -50,31 +50,42 @@ def list(request):
         hhru_response = requests.get(f'https://api.hh.ru/vacancies?text={name}&per_page=100').json()
         to_database(hhru_response)
 
-        vacancies = Vacancy.objects.filter(name__contains=name)[:10]
+        vacancies = Vacancy.objects.filter(name__contains=name)
         array = []
         for vacancy in vacancies:
             test = 'Есть' if vacancy.has_test else "Нет"
             array.append([vacancy.name,vacancy.salary,vacancy.experience,test,vacancy.area,vacancy.description])
-        print(array)
-        return render(request, "list.html",{"name":name,"list":array})
+        return render(request, "list.html",
+                      {"name": name,
+                       "experience": "Нет опыта",
+                       "salary": 0,
+                       "has_test": "Нет",
+                       "list": array})
     if request.method == 'GET':
-        name = request.GET.get("name", "Программист")
-        experience = request.GET.get("experience", "Нет опыта")
+        name = request.GET.get("name","Программист")
+        experience = request.GET.get("experience", "")
         salary = request.GET.get("salary", 0)
-        has_test = request.GET.get("has_test", False)
-        print(name)
+        has_test = request.GET.get("has_test", "")
+        test = has_test == "on"
+        has_test = "Есть" if test else "Нет"
+        print(test)
+        print(has_test)
         vacancies = Vacancy.objects.filter(
             name__contains=name,
             experience__contains=experience,
             salary__gte=salary,
-            has_test=has_test
+            has_test=test
         )
         array = []
         for vacancy in vacancies:
-            test = 'Есть' if vacancy.has_test else "Нет"
-            array.append([vacancy.name, vacancy.salary, vacancy.experience, test, vacancy.area, vacancy.description])
-        print(array)
-        return render(request, "list.html", {"name": name, "list": array})
+            has_test = 'Есть' if vacancy.has_test else "Нет"
+            array.append([vacancy.name, vacancy.salary, vacancy.experience, has_test, vacancy.area, vacancy.description])
+        return render(request, "list.html",
+                      {"name": name,
+                       "experience":experience,
+                       "salary":salary,
+                       "has_test":has_test,
+                       "list": array})
 
 def about(request):
     return render(request, "about.html")
